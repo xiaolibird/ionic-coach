@@ -31,9 +31,9 @@
 angular.module('starter.controllers', ['ionic','starter.services'])
 
 
-// .config(function($compileProvider){
-//   $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
-// })
+.config(function($compileProvider){
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+})
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
@@ -121,20 +121,21 @@ angular.module('starter.controllers', ['ionic','starter.services'])
     // });
   };
   
-  // $scope.getPhoto = function() {
-  //   console.log("要拍照了！");
-  //   Camera.getPicture().then(function(imageURI) {
-  //     console.log(imageURI);
-  //     $scope.lastPhoto = imageURI;
-  //   }, function(err) {
-  //     console.err(err);
-  //   }, {
-  //     quality: 75,
-  //     targetWidth: 320,
-  //     targetHeight: 320,
-  //     saveToPhotoAlbum: false
-  //   });
-  // };
+  $scope.getPhoto = function() {
+    console.log("要拍照了！");
+    console.log(navigator.camera);
+    Camera.getPicture().then(function(imageURI) {
+      console.log(imageURI);
+      $scope.lastPhoto = imageURI;
+    }, function(err) {
+      console.err(err);
+    }, {
+      quality: 75,
+      targetWidth: 320,
+      targetHeight: 320,
+      saveToPhotoAlbum: false
+    });
+  };
 // ionicPopover functions
 //-----------------------------------------------------------------
 // .fromTemplateUrl() method
