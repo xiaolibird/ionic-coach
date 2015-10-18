@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+angular.module('starter.services', ['ngCordova'])
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
@@ -49,25 +49,48 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Camera', ['$q', function($q) {
+// .factory('Camera', ['$q', function($q) {
  
-  return {
-    getPicture: function(options) {
-      var q = $q.defer();
+//   return {
+//     getPicture: function(options) {
+//       var q = $q.defer();
       
-      navigator.camera.getPicture(function(result) {
-        // Do any magic you need
-        q.resolve(result);
-      }, function(err) {
-        q.reject(err);
-      }, options);
+//       navigator.camera.getPicture(function(result) {
+//         // Do any magic you need
+//         q.resolve(result);
+//       }, function(err) {
+//         q.reject(err);
+//       }, options);
       
-      return q.promise;
-    }
-  }
-}])
+//       return q.promise;
+//     }
+//   }
+// }])
 
-
+// .factory('Camera', ['$cordovaCamera', function($cordovaCamera) {
+//     var options = { 
+//             quality : 75, 
+//             destinationType : Camera.DestinationType.DATA_URL, 
+//             sourceType : Camera.PictureSourceType.CAMERA, 
+//             allowEdit : true,
+//             encodingType: Camera.EncodingType.JPEG,
+//             targetWidth: 300,
+//             targetHeight: 300,
+//             popoverOptions: CameraPopoverOptions,
+//             saveToPhotoAlbum: false
+//         };
+//   return {
+//     getPicture: function() {
+//       $cordovaCamera.getPicture(options).then(function(imageData) {
+//             imgURI = "data:image/jpeg;base64," + imageData;
+//         }, function(err) {
+//             // An error occured. Show a message to the user
+//             console.log("sth wrong");
+//             imgURI = undefined;
+//         });
+//     }
+//   }
+// }])
 
 
 .factory('Storage', ['$window', function ($window) {

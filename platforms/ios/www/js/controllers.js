@@ -28,12 +28,12 @@
 // });
 
 
-angular.module('starter.controllers', ['ionic','starter.services'])
+angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 
 
-.config(function($compileProvider){
-  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
-})
+// .config(function($compileProvider){
+//   $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+// })
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
@@ -42,8 +42,8 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   '$ionicPopover',
   '$stateParams',
   'Storage',
-  'Camera',
-  function($scope,$state,$ionicPopover,$stateParams,Storage,Camera) {
+  '$cordovaCamera',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,$cordovaCamera) {
 
   $scope.items = 
   [
@@ -123,19 +123,42 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   
   $scope.getPhoto = function() {
     console.log("要拍照了！");
-    console.log(navigator.camera);
-    Camera.getPicture().then(function(imageURI) {
-      console.log(imageURI);
-      $scope.lastPhoto = imageURI;
-    }, function(err) {
-      console.err(err);
-    }, {
-      quality: 75,
-      targetWidth: 320,
-      targetHeight: 320,
-      saveToPhotoAlbum: false
-    });
+    // console.log(navigator.camera);
+
+    // $scope.imgURI = Camera.getPicture();   
+    // Camera.getPicture().then(function(imageURI) {
+    //   console.log(imageURI);
+    //   $scope.lastPhoto = imageURI;
+    // }, function(err) {
+    //   console.err(err);
+    // }, {
+    //   quality: 75,
+    //   targetWidth: 320,
+    //   targetHeight: 320,
+    //   saveToPhotoAlbum: false
+    // });
+    $scope.takePicture();
   };
+
+  $scope.takePicture = function() {
+      var options = { 
+          quality : 75, 
+          destinationType : Camera.DestinationType.DATA_URL, 
+          sourceType : Camera.PictureSourceType.CAMERA, 
+          allowEdit : true,
+          encodingType: Camera.EncodingType.JPEG,
+          targetWidth: 300,
+          targetHeight: 300,
+          popoverOptions: CameraPopoverOptions,
+          saveToPhotoAlbum: false
+      };
+
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+          $scope.imgURI = "data:image/jpeg;base64," + imageData;
+      }, function(err) {
+          // An error occured. Show a message to the user
+      });
+  }  
 // ionicPopover functions
 //-----------------------------------------------------------------
 // .fromTemplateUrl() method

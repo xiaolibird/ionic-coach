@@ -15,7 +15,9 @@
   <!-- </ion-item> -->
 </ion-list>
 
-<img ng-src="{{lastPhoto}}" style="max-width: 100%">
+<!-- <img ng-src="{{lastPhoto}}" style="max-width: 100%"> -->
+<img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+<img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
 <!--   <ion-list>
     <div class="list list-inset">
     <label class="item item-input">
