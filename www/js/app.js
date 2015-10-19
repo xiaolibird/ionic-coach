@@ -35,8 +35,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-
-
   // setup an abstract state for the tabs directive
     .state('coach', {
     url: '/coach',
@@ -45,15 +43,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   })
 
   // Each tab has its own nav history stack:
-    .state('coach.upload',{
+    .state('upload',{
       url:'/upload',
-      views:{
-        'coach-upload':{
+      // views:{
+      //   'coach-upload':{
+      //     templateUrl:'templates/coach-idupload.html',
+      //     controller:'CoachIdUploadCtrl'          
+      //   }
+      // }
           templateUrl:'templates/coach-idupload.html',
-          controller:'CoachIdUploadCtrl'          
-        }
-      }
-
+          controller:'CoachIdUploadCtrl'  
     })
 
   .state('coach.home', {
@@ -75,6 +74,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
+
     .state('coach.config', {
       url: '/config',
       views: {
@@ -93,9 +93,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         controller: 'CoachPersonalScheduleCtrl'
       }
     }
-  });
+  })
+
+  .state('coach.patients',{
+    url:'/patients',
+    views:{
+      'coach-patients':{
+        templateUrl:'templates/coach-patients.html',
+        controller:'CoachPatientsCtrl'
+      }
+    }
+
+  })
+
+  .state('coach.message',{
+    url:'/message',
+    views:{
+      'coach-message':{
+        templateUrl:'templates/coach-message.html',
+        controller:'CoachMessageCtrl'
+      }
+    }
+
+  })
+
+  .state('coach.me',{
+    url:'/me',
+    views:{
+      'coach-me':{
+        templateUrl:'templates/coach-me.html',
+        controller:'CoachMeCtrl'
+      }
+    }
+
+  })
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/coach/upload');
+  $urlRouterProvider.otherwise('/upload');
 
 });

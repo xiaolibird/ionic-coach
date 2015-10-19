@@ -67,30 +67,34 @@ angular.module('starter.services', ['ngCordova'])
 //   }
 // }])
 
-// .factory('Camera', ['$cordovaCamera', function($cordovaCamera) {
-//     var options = { 
-//             quality : 75, 
-//             destinationType : Camera.DestinationType.DATA_URL, 
-//             sourceType : Camera.PictureSourceType.CAMERA, 
-//             allowEdit : true,
-//             encodingType: Camera.EncodingType.JPEG,
-//             targetWidth: 300,
-//             targetHeight: 300,
-//             popoverOptions: CameraPopoverOptions,
-//             saveToPhotoAlbum: false
-//         };
-//   return {
-//     getPicture: function() {
-//       $cordovaCamera.getPicture(options).then(function(imageData) {
-//             imgURI = "data:image/jpeg;base64," + imageData;
-//         }, function(err) {
-//             // An error occured. Show a message to the user
-//             console.log("sth wrong");
-//             imgURI = undefined;
-//         });
-//     }
-//   }
-// }])
+.factory('myCamera', ['$cordovaCamera',
+  function($cordovaCamera) {
+  //def options inside factory no need for params in controller
+    var options = { 
+            quality : 75, 
+            destinationType : Camera.DestinationType.DATA_URL, 
+            sourceType : Camera.PictureSourceType.CAMERA, 
+            allowEdit : true,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: 300,
+            targetHeight: 300,
+            popoverOptions: CameraPopoverOptions,
+            saveToPhotoAlbum: false
+        };
+    
+  return {
+    getPicture: function() {
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+            imgURI = "data:image/jpeg;base64," + imageData;
+        }, function(err) {
+            // An error occured. Show a message to the user
+            console.log("sth wrong");
+            imgURI = undefined;
+        });
+      return imgURI;
+    }
+  }
+}])
 
 
 .factory('Storage', ['$window', function ($window) {

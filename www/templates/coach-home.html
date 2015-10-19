@@ -1,5 +1,5 @@
 
-<ion-view view-title = "健康专员主页">
+<ion-view view-title = "健康专员主页  ({{state}}) " >
 
 <ion-header-bar >
   <button class="button button-icon icon ion-qr-scanner">扫一扫</button>
@@ -14,13 +14,13 @@
 
   
   <div class="item item-avatar">
-    <img ng-src="https://avatars3.githubusercontent.com/u/11214?v=3&s=460">
+    <img ng-src="{{imgURI}}">
     <h2>{{ name }}</h2>
     <p>{{company}}</p>
   </div>
 
   <div class="item item-body">
-    <img class="avatar" ng-src="https://avatars3.githubusercontent.com/u/11214?v=3&s=460">
+    <img class="avatar" ng-src= "{{imgURI}}" >
     <p>
        {{selfintro}}
     </p>
@@ -65,31 +65,59 @@
 
 </ion-list>
 
-</br></br></br>
-<ion-tabs class="tabs-light icon title">
 
-  <ion-tab title="Home" icon = "ion-ios-people" >
-    <!-- Tab 1 content -->我的患者
-  </ion-tab>
 
-  <ion-tab title="About" icon="icon ion-android-person-add">
-    <!-- Tab 2 content -->新患者
-  </ion-tab>
-
-  <ion-tab title="Settings" icon="icon ion-android-mail" badge="5" badge-style="badge-assertive">
-    <!-- Tab 3 content -->通知
-  </ion-tab>
-
-    <ion-tab title="Settings" icon="ion-ios-person">
-    <!-- Tab 3 content -->我
-  </ion-tab>
-
-</ion-tabs>
 
 </ion-content>
 
+<!--   <ion-footer-bar>
+    <ion-tabs class="tabs-icon-top tabs-color-active-positive">
+
+      <ion-tab title="My patients" icon = "ion-ios-people" >
+        我的患者
+      </ion-tab>
+
+      <ion-tab title="New" icon="icon ion-android-person-add">
+        新患者
+      </ion-tab>
+
+      <ion-tab title="Notification" icon="icon ion-android-mail" badge="5" badge-style="badge-assertive">
+        通知
+      </ion-tab>
+
+      <ion-tab title="Me" icon="ion-ios-person">
+        我
+      </ion-tab>
+
+    </ion-tabs>  
+  </ion-footer-bar > -->
 
 
-  <ion-footer-bar >
-  </ion-footer-bar >
 </ion-view>
+
+
+<!-- 
+<ion-tabs class="tabs-icon-top tabs-color-active-positive">
+
+
+  <ion-tab title="主页" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/coach/home">
+    <ion-nav-view name="coach-home"></ion-nav-view>
+  </ion-tab>
+
+<!--   <ion-tab title="上传信息" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/coach/upload">
+    <ion-nav-view name="coach-upload"></ion-nav-view>
+  </ion-tab>
+ -->
+<!--   <ion-tab title="设置" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes" href="#/coach/config">
+    <ion-nav-view name="coach-config"></ion-nav-view>
+  </ion-tab>
+
+  <ion-tab title="个人信息23333" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/coach/personalinfo">
+    <ion-nav-view name="coach-personalinfo"></ion-nav-view>
+  </ion-tab>
+
+  <ion-tab title="schedule" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/coach/schedule">
+    <ion-nav-view name="coach-schedule"></ion-nav-view>
+  </ion-tab>
+
+</ion-tabs> -->
