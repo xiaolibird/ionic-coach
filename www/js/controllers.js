@@ -263,15 +263,15 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
    // console.log($scope.infom);
    
   $scope.onClickPersonalInfo = function(){
-      $state.go('coach.personalinfo');
+      $state.go('personalinfo');
   };
 
   $scope.onClickPersonalConfig = function(){
-      $state.go('coach.config');
+      $state.go('config');
   };
 
   $scope.onClickPersonalSchedule = function(){
-      $state.go('coach.schedule');
+      $state.go('schedule');
   };
 }])
 
@@ -301,6 +301,18 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
      $ionicHistory.goBack();
   };
 }])
+
+.controller('CoachMessageCtrl',function(){
+
+})
+
+.controller('CoachICtrl',function(){
+
+})
+
+.controller('CoachPatientsCtrl',function(){
+
+})
 
 
 

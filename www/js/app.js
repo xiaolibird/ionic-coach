@@ -65,34 +65,40 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
-  .state('coach.personalinfo', {
+  .state('personalinfo', {
       url: '/personalinfo',
-      views: {
-        'coach-personalinfo': {
-          templateUrl: 'templates/coach-personalinfo.html',
-          controller: 'CoachPersonalInfoCtrl'
-        }
-      }
+      // views: {
+      //   'coach-personalinfo': {
+      //     templateUrl: 'templates/coach-personalinfo.html',
+      //     controller: 'CoachPersonalInfoCtrl'
+      //   }
+      // }
+      templateUrl: 'templates/coach-personalinfo.html',
+      controller: 'CoachPersonalInfoCtrl'      
     })
 
-    .state('coach.config', {
+    .state('config', {
       url: '/config',
-      views: {
-        'coach-config': {
-          templateUrl: 'templates/coach-config.html',
-          controller: 'CoachPersonalConfigCtrl'
-        }
-      }
+      // views: {
+      //   'coach-config': {
+      //     templateUrl: 'templates/coach-config.html',
+      //     controller: 'CoachPersonalConfigCtrl'
+      //   }
+      // }
+      templateUrl: 'templates/coach-config.html',
+      controller: 'CoachPersonalConfigCtrl'
     })
 
-  .state('coach.schedule', {
+  .state('schedule', {
     url: '/schedule',
-    views: {
-      'coach-schedule': {
+    // views: {
+    //   'coach-schedule': {
+    //     templateUrl: 'templates/coach-schedule.html',
+    //     controller: 'CoachPersonalScheduleCtrl'
+    //   }
+    // }
         templateUrl: 'templates/coach-schedule.html',
-        controller: 'CoachPersonalScheduleCtrl'
-      }
-    }
+        controller: 'CoachPersonalScheduleCtrl'    
   })
 
   .state('coach.patients',{
@@ -117,16 +123,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
 
   })
 
-  .state('coach.me',{
-    url:'/me',
+  .state('coach.i',{
+    url:'/i',
     views:{
-      'coach-me':{
-        templateUrl:'templates/coach-me.html',
-        controller:'CoachMeCtrl'
+      'coach-i':{
+        templateUrl:'templates/coach-i.html',
+        controller:'CoachICtrl'
       }
     }
 
-  })
+  });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/upload');
