@@ -43,6 +43,7 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   '$stateParams',
   'Storage',
   '$cordovaCamera',
+  'Patients',
   
 
   
@@ -51,7 +52,8 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
     $ionicPopover,
     $stateParams,
     Storage,
-    $cordovaCamera
+    $cordovaCamera,
+    Patients
     ) {
 
   $scope.items = 
@@ -71,7 +73,7 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   ];
 
   $scope.state = "未上传";
-    
+  
   //the user skip this step put state to unuploaded.
   $scope.onClickSkip = function(){     
       $scope.state = "未上传";
@@ -287,7 +289,8 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 
 // Coach Personal Infomation Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) {
+.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory',
+  function($scope,$state,$ionicHistory) {
   $scope.onClickBackward = function(){
        $ionicHistory.goBack();
   };
@@ -296,25 +299,97 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 
 // Coach Personal Schedule Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalScheduleCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) {
+.controller('CoachScheduleCtrl', ['$scope','$state','$ionicHistory','$http',
+  function($scope,$state,$ionicHistory,$http) {
+
+  $http.get('js/data.json').success(function(data) {
+    $scope.calendar = data.calendar; 
+    // $scope.whichartist= $state.params.aId;
+    // console.log($scope.whichartist);
+    $scope.data = { showDelete: false, showReorder: false };
+
+
+
+  // $scope.moveItem = function(item, fromIndex, toIndex) {
+  //       $scope.calendar.splice(fromIndex, 1);
+  //       $scope.calendar.splice(toIndex, 0, item);
+  // }
+
+  $scope.onItemDelete = function(dayIndex,item) {
+    // $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+    $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+  }
+
+  $scope.toggleStar = function(item) {
+   item.star = !item.star;
+  }
+
   $scope.onClickBackward = function(){
      $ionicHistory.goBack();
-  };
+  }
+
+  $scope.doRefresh =function() {
+
+      $http.get('js/data.json').success(function(data) {
+      $scope.patients = data.calendar;
+      $scope.$broadcast('scroll.refreshComplete'); 
+    });
+  }
+  });
+
 }])
 
 .controller('CoachMessageCtrl',function(){
 
 })
 
-.controller('CoachICtrl',function(){
+.controller('CoachMeCtrl',function(){
 
 })
 
-.controller('CoachPatientsCtrl',function(){
+.controller('CoachPatientsCtrl', ['Patients','$scope','$http','$state',
+  function(Patients,$scope,$http,$state){
+  // $scope.chats = Chats.all(); 
+  // $scope.remove = function(chat) {
+  //   Chats.remove(chat);
+  // };
+  // $scope.patients = Patients.all();
+  $http.get('js/data.json').success(function(data) {
+    $scope.patients = data.artists; 
+    $scope.whichartist= $state.params.aId;
+    console.log($scope.whichartist);
+    $scope.data = { showDelete: false, showReorder: false };
 
-})
 
 
+  $scope.moveItem = function(item, fromIndex, toIndex) {
+        $scope.patients.splice(fromIndex, 1);
+        $scope.patients.splice(toIndex, 0, item);
+  }
+
+  $scope.onItemDelete = function(item) {
+    $scope.patients.splice($scope.patients.indexOf(item), 1);
+  }
+
+  $scope.toggleStar = function(item) {
+   item.star = !item.star;
+  }
+
+  $scope.doRefresh =function() {
+
+      $http.get('js/data.json').success(function(data) {
+      $scope.patients = data.artists;
+      $scope.$broadcast('scroll.refreshComplete'); 
+    });
+  }
+  });
+
+
+}])
+
+// .controller('CoachPatientsDetailController',function(){
+
+// })
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
