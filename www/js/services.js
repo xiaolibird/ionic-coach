@@ -66,6 +66,56 @@ angular.module('starter.services', ['ngCordova'])
 //     }
 //   }
 // }])
+.factory('Patients',function(){
+  //get patients
+  //remove certain patients
+  //add  patients
+  //blablabla used by two controllers
+  var patients_array = [{
+    id: 0,
+    name: 'Ben Sparrow',
+    lastText: 'You on your way?',
+    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
+  }, {
+    id: 1,
+    name: 'Max Lynx',
+    lastText: 'Hey, it\'s me',
+    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
+  }, {
+    id: 2,
+    name: 'Adam Bradleyson',
+    lastText: 'I should buy a boat',
+    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
+  }, {
+    id: 3,
+    name: 'Perry Governor',
+    lastText: 'Look at my mukluks!',
+    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
+  }, {
+    id: 4,
+    name: 'Mike Harrington',
+    lastText: 'This is wicked good ice cream.',
+    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
+  }];
+
+
+  return {
+    all: function() {
+      return patients_array;
+    },
+    remove: function(patient) {
+      patients_array.splice(patients_array.indexOf(chat), 1);
+    },
+    get: function(patientid) {
+      for (var i = 0; i < patients_array.length; i++) {
+        if (patients_array[i].id === parseInt(patientid)) {
+          return patients_array[i];
+        }
+      }
+      return null;
+    }
+  };
+})
 
 .factory('myCamera', ['$cordovaCamera',
   function($cordovaCamera) {

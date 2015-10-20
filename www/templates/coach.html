@@ -7,7 +7,7 @@ navigation history that also transitions its views in and out.
 
 <ion-tabs class="tabs-icon-top tabs-color-active-positive">
 
-  <ion-tab title="主页" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/coach/home">
+  <ion-tab title="主页" icon-off="ion-ios-home" icon-on="ion-ios-home-outline" href="#/coach/home">
     <ion-nav-view name="coach-home"></ion-nav-view>
   </ion-tab>
 
@@ -29,26 +29,25 @@ navigation history that also transitions its views in and out.
 <!--   <ion-nav-view name="coach-config"></ion-nav-view>
   <ion-nav-view name="coach-personalinfo"></ion-nav-view>
   <ion-nav-view name="coach-schedule"></ion-nav-view> -->
-
+<ion-footer-bar>
   <ion-tab title="My patients" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/coach/patients">
     <ion-nav-view name="coach-patients"></ion-nav-view>
   </ion-tab>  
 
-  <ion-tab title="Add patients" icon-off="ion-android-person-add" icon-on="ion-android-person-add" >
+  <ion-tab title="Add patients" icon-off="ion-android-person-add" icon-on="ion-android-person-add" href="#/coach/addpatients">
     <!-- <ion-nav-view name="coach-addpatients"></ion-nav-view> -->
   </ion-tab>  
 
-  <ion-tab title="message" icon-off="ion-android-mail" icon-on="ion-android-mail" badge="5" badge-style="badge-assertive" href="#/coach/message">
+  <ion-tab title="message" icon-off="ion-android-mail" icon-on="ion-android-mail"  badge="130" badge-style="badge-assertive" href="#/coach/message">
     <ion-nav-view name="coach-message"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Me" icon-off="ion-ios-person-outline" icon-on="ion-ios-person" href="#/coach/i">
-    <ion-nav-view name="coach-i"></ion-nav-view>
+  <ion-tab title="me" icon-off="ion-ios-person-outline" icon-on="ion-ios-person" href="#/coach/i">
+    <ion-nav-view name="coach-me"></ion-nav-view>
   </ion-tab>
 
 </ion-tabs>
-
-
+</ion-footer-bar>
 <!--
 Create tabs with an icon and label, using the tabs-positive style.
 Each tab's child <ion-nav-view> directive will have its own

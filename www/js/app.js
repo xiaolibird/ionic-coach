@@ -23,6 +23,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 })
 
+
+.config(['$ionicConfigProvider',function($ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+  $ionicConfigProvider.tabs.style('standard');
+  $ionicConfigProvider.navBar.alignTitle('center');
+  $ionicConfigProvider.navBar.positionPrimaryButtons('left');
+  $ionicConfigProvider.navBar.positionSecondaryButtons('right');
+  $ionicConfigProvider.form.checkbox('circle');
+}])
+
+
+
+
 // .config(function($compileProvider){
 //   $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 // })
@@ -98,7 +111,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     //   }
     // }
         templateUrl: 'templates/coach-schedule.html',
-        controller: 'CoachPersonalScheduleCtrl'    
+        controller: 'CoachScheduleCtrl'    
   })
 
   .state('coach.patients',{
@@ -110,6 +123,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       }
     }
 
+  })
+
+  .state('coach.patientsdetail', {
+    url: '/patients/:aId',
+    views: {
+      'coach-patients' : {
+        templateUrl: 'templates/coach-patientsdetail.html',
+        controller: 'CoachPatientsCtrl'
+      }
+    }
   })
 
   .state('coach.message',{
@@ -126,9 +149,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   .state('coach.i',{
     url:'/i',
     views:{
-      'coach-i':{
-        templateUrl:'templates/coach-i.html',
-        controller:'CoachICtrl'
+      'coach-me':{
+        templateUrl:'templates/coach-me.html',
+        controller:'CoachMeCtrl'
       }
     }
 

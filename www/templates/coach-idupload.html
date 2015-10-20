@@ -1,4 +1,4 @@
-<ion-view view-title="上传认证资料">
+<ion-view view-title="上传认证资料" hide-nav-bar="true">
 
 <ion-header-bar >
   <h1 class="title">上传认证资料</h1>
@@ -6,7 +6,7 @@
 
 <ion-content>
 
-<ion-list>
+<ion-list class="list-inset">
   <!-- <ion-item ng-repeat="item in items"> -->
     <label class="item item-input" ng-repeat="item in items">
       <input type="text" placeholder="{{item.t}}" ng-model="item.v">
