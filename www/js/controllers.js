@@ -43,7 +43,16 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   '$stateParams',
   'Storage',
   '$cordovaCamera',
-  function($scope,$state,$ionicPopover,$stateParams,Storage,$cordovaCamera) {
+  
+
+  
+  function($scope,
+    $state,
+    $ionicPopover,
+    $stateParams,
+    Storage,
+    $cordovaCamera
+    ) {
 
   $scope.items = 
   [
@@ -73,25 +82,26 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   //the user submit
   $scope.onClickSubmit = function(){
       
-      $scope.state = "审核中";
-      $scope.name = "hehe"
-      var temp = $scope.items;
+      // $scope.state = "审核中";
+      // $scope.name = "hehe"
+      // var temp = $scope.items;
       // console.log($scope.items[0].v);
       // 可能要在service里封装一个将对象数组变成对象数组的方法
-      var i = 0;
-      var infoObject = {
-        name: $scope.items[0].v,
-        company: $scope.items[1].v,
-        position: $scope.items[2].v,
-        intro: $scope.items[3].v,
-        imageURI:''
-      };
+      // var i = 0;
+      // var infoObject = {
+      //   name: $scope.items[0].v,
+      //   company: $scope.items[1].v,
+      //   position: $scope.items[2].v,
+      //   intro: $scope.items[3].v,
+      //   imageURI:''
+      // };
 
       Storage.set(13,$scope.state);
       Storage.set(131,$scope.items[0].v);
       Storage.set(132,$scope.items[1].v);
       Storage.set(133,$scope.items[2].v);
       Storage.set(134,$scope.items[3].v);
+      Storage.set(14,$scope.imgURI);
       // for(i=0;i<temp.length;i++)console.log(temp[i].v);
       // $state.go('coach.home',{'state': $scope.state, 'info' :  infoObject.name},"replace");
       $state.go('coach.home');
@@ -109,6 +119,10 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   $scope.onClickCameraPhotos = function(){
     //bla
    console.log("选个照片"); 
+   
+   
+   
+   $scope.closePopover();
   };
 
   $scope.onClickCameraCamera = function(){
@@ -119,6 +133,7 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
     // },function(err){
     //   console.log(err);
     // });
+    $scope.closePopover();
   };
   
   $scope.getPhoto = function() {
@@ -138,9 +153,11 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
     //   saveToPhotoAlbum: false
     // });
     $scope.takePicture();
+    $scope.closePopover();
   };
 
   $scope.takePicture = function() {
+    //Camera是ngCordova里面定义好的宏 如果定义在service中 那么编译都会通不过，影响界面渲染，索性放在这里
       var options = { 
           quality : 75, 
           destinationType : Camera.DestinationType.DATA_URL, 
@@ -150,7 +167,7 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
           targetWidth: 300,
           targetHeight: 300,
           popoverOptions: CameraPopoverOptions,
-          saveToPhotoAlbum: false
+          saveToPhotoAlbum: true
       };
 
       $cordovaCamera.getPicture(options).then(function(imageData) {
@@ -158,7 +175,27 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
       }, function(err) {
           // An error occured. Show a message to the user
       });
-  }  
+  };
+
+  //   $scope.takePicture = function() {
+  //     var options = { 
+  //         quality : 75, 
+  //         destinationType : Camera.DestinationType.DATA_URL, 
+  //         sourceType : Camera.PictureSourceType.CAMERA, 
+  //         allowEdit : true,
+  //         encodingType: Camera.EncodingType.JPEG,
+  //         targetWidth: 300,
+  //         targetHeight: 300,
+  //         popoverOptions: CameraPopoverOptions,
+  //         saveToPhotoAlbum: false
+  //     };
+
+  //     $cordovaCamera.getPicture(options).then(function(imageData) {
+  //         $scope.imgURI = "data:image/jpeg;base64," + imageData;
+  //     }, function(err) {
+  //         // An error occured. Show a message to the user
+  //     });
+  // }    
 // ionicPopover functions
 //-----------------------------------------------------------------
 // .fromTemplateUrl() method
@@ -213,8 +250,8 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
    
    // console.log($stateParams.info);
    // console.log($stateParams.info.intro);
-   $scope.items = $stateParams.info;
-   $scope.state = $stateParams.state;
+   // $scope.items = $stateParams.info;
+   // $scope.state = $stateParams.state;
 
    
    $scope.state = Storage.get(13);
@@ -222,18 +259,19 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
    $scope.company = Storage.get(132);
    $scope.position = Storage.get(133);
    $scope.selfintro = Storage.get(134);
-   console.log($scope.infom);
+   $scope.imgURI = Storage.get(14);
+   // console.log($scope.infom);
    
   $scope.onClickPersonalInfo = function(){
-      $state.go('coach.personalinfo');
+      $state.go('personalinfo');
   };
 
   $scope.onClickPersonalConfig = function(){
-      $state.go('coach.config');
+      $state.go('config');
   };
 
   $scope.onClickPersonalSchedule = function(){
-      $state.go('coach.schedule');
+      $state.go('schedule');
   };
 }])
 
@@ -263,6 +301,18 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
      $ionicHistory.goBack();
   };
 }])
+
+.controller('CoachMessageCtrl',function(){
+
+})
+
+.controller('CoachICtrl',function(){
+
+})
+
+.controller('CoachPatientsCtrl',function(){
+
+})
 
 
 

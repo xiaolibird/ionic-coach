@@ -35,8 +35,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-
-
   // setup an abstract state for the tabs directive
     .state('coach', {
     url: '/coach',
@@ -45,15 +43,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   })
 
   // Each tab has its own nav history stack:
-    .state('coach.upload',{
+    .state('upload',{
       url:'/upload',
-      views:{
-        'coach-upload':{
+      // views:{
+      //   'coach-upload':{
+      //     templateUrl:'templates/coach-idupload.html',
+      //     controller:'CoachIdUploadCtrl'          
+      //   }
+      // }
           templateUrl:'templates/coach-idupload.html',
-          controller:'CoachIdUploadCtrl'          
-        }
-      }
-
+          controller:'CoachIdUploadCtrl'  
     })
 
   .state('coach.home', {
@@ -66,36 +65,76 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
-  .state('coach.personalinfo', {
+  .state('personalinfo', {
       url: '/personalinfo',
-      views: {
-        'coach-personalinfo': {
-          templateUrl: 'templates/coach-personalinfo.html',
-          controller: 'CoachPersonalInfoCtrl'
-        }
-      }
-    })
-    .state('coach.config', {
-      url: '/config',
-      views: {
-        'coach-config': {
-          templateUrl: 'templates/coach-config.html',
-          controller: 'CoachPersonalConfigCtrl'
-        }
-      }
+      // views: {
+      //   'coach-personalinfo': {
+      //     templateUrl: 'templates/coach-personalinfo.html',
+      //     controller: 'CoachPersonalInfoCtrl'
+      //   }
+      // }
+      templateUrl: 'templates/coach-personalinfo.html',
+      controller: 'CoachPersonalInfoCtrl'      
     })
 
-  .state('coach.schedule', {
+    .state('config', {
+      url: '/config',
+      // views: {
+      //   'coach-config': {
+      //     templateUrl: 'templates/coach-config.html',
+      //     controller: 'CoachPersonalConfigCtrl'
+      //   }
+      // }
+      templateUrl: 'templates/coach-config.html',
+      controller: 'CoachPersonalConfigCtrl'
+    })
+
+  .state('schedule', {
     url: '/schedule',
-    views: {
-      'coach-schedule': {
+    // views: {
+    //   'coach-schedule': {
+    //     templateUrl: 'templates/coach-schedule.html',
+    //     controller: 'CoachPersonalScheduleCtrl'
+    //   }
+    // }
         templateUrl: 'templates/coach-schedule.html',
-        controller: 'CoachPersonalScheduleCtrl'
+        controller: 'CoachPersonalScheduleCtrl'    
+  })
+
+  .state('coach.patients',{
+    url:'/patients',
+    views:{
+      'coach-patients':{
+        templateUrl:'templates/coach-patients.html',
+        controller:'CoachPatientsCtrl'
       }
     }
+
+  })
+
+  .state('coach.message',{
+    url:'/message',
+    views:{
+      'coach-message':{
+        templateUrl:'templates/coach-message.html',
+        controller:'CoachMessageCtrl'
+      }
+    }
+
+  })
+
+  .state('coach.i',{
+    url:'/i',
+    views:{
+      'coach-i':{
+        templateUrl:'templates/coach-i.html',
+        controller:'CoachICtrl'
+      }
+    }
+
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/coach/upload');
+  $urlRouterProvider.otherwise('/upload');
 
 });

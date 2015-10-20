@@ -45,15 +45,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   })
 
   // Each tab has its own nav history stack:
-    .state('coach.upload',{
+    .state('upload',{
       url:'/upload',
-      views:{
-        'coach-upload':{
+      // views:{
+      //   'coach-upload':{
+      //     templateUrl:'templates/coach-idupload.html',
+      //     controller:'CoachIdUploadCtrl'          
+      //   }
+      // }
           templateUrl:'templates/coach-idupload.html',
-          controller:'CoachIdUploadCtrl'          
-        }
-      }
-
+          controller:'CoachIdUploadCtrl'  
     })
 
   .state('coach.home', {
@@ -96,6 +97,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/coach/upload');
+  $urlRouterProvider.otherwise('/upload');
 
 });
