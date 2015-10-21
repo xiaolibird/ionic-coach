@@ -23,6 +23,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 })
 
+
+.config(['$ionicConfigProvider',function($ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+  $ionicConfigProvider.tabs.style('standard');
+  $ionicConfigProvider.navBar.alignTitle('center');
+  $ionicConfigProvider.navBar.positionPrimaryButtons('left');
+  $ionicConfigProvider.navBar.positionSecondaryButtons('right');
+  $ionicConfigProvider.form.checkbox('circle');
+}])
+
+
+
+
 // .config(function($compileProvider){
 //   $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 // })
@@ -34,8 +47,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-
-
 
   // setup an abstract state for the tabs directive
     .state('coach', {
@@ -67,33 +78,83 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
-  .state('coach.personalinfo', {
+  .state('personalinfo', {
       url: '/personalinfo',
-      views: {
-        'coach-personalinfo': {
-          templateUrl: 'templates/coach-personalinfo.html',
-          controller: 'CoachPersonalInfoCtrl'
-        }
-      }
-    })
-    .state('coach.config', {
-      url: '/config',
-      views: {
-        'coach-config': {
-          templateUrl: 'templates/coach-config.html',
-          controller: 'CoachPersonalConfigCtrl'
-        }
-      }
+      // views: {
+      //   'coach-personalinfo': {
+      //     templateUrl: 'templates/coach-personalinfo.html',
+      //     controller: 'CoachPersonalInfoCtrl'
+      //   }
+      // }
+      templateUrl: 'templates/coach-personalinfo.html',
+      controller: 'CoachPersonalInfoCtrl'      
     })
 
-  .state('coach.schedule', {
+    .state('config', {
+      url: '/config',
+      // views: {
+      //   'coach-config': {
+      //     templateUrl: 'templates/coach-config.html',
+      //     controller: 'CoachPersonalConfigCtrl'
+      //   }
+      // }
+      templateUrl: 'templates/coach-config.html',
+      controller: 'CoachPersonalConfigCtrl'
+    })
+
+  .state('schedule', {
     url: '/schedule',
-    views: {
-      'coach-schedule': {
+    // views: {
+    //   'coach-schedule': {
+    //     templateUrl: 'templates/coach-schedule.html',
+    //     controller: 'CoachPersonalScheduleCtrl'
+    //   }
+    // }
         templateUrl: 'templates/coach-schedule.html',
-        controller: 'CoachPersonalScheduleCtrl'
+        controller: 'CoachScheduleCtrl'    
+  })
+
+  .state('coach.patients',{
+    url:'/patients',
+    views:{
+      'coach-patients':{
+        templateUrl:'templates/coach-patients.html',
+        controller:'CoachPatientsCtrl'
       }
     }
+
+  })
+
+  .state('coach.patientsdetail', {
+    url: '/patients/:aId',
+    views: {
+      'coach-patients' : {
+        templateUrl: 'templates/coach-patientsdetail.html',
+        controller: 'CoachPatientsCtrl'
+      }
+    }
+  })
+
+  .state('coach.message',{
+    url:'/message',
+    views:{
+      'coach-message':{
+        templateUrl:'templates/coach-message.html',
+        controller:'CoachMessageCtrl'
+      }
+    }
+
+  })
+
+  .state('coach.i',{
+    url:'/i',
+    views:{
+      'coach-me':{
+        templateUrl:'templates/coach-me.html',
+        controller:'CoachMeCtrl'
+      }
+    }
+
   });
 
   // if none of the above states are matched, use this as the fallback
