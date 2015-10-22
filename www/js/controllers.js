@@ -145,9 +145,14 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
   $scope.takePicture = function() {
       
-      Camera.getPicture();
-      $scope.imgURI = Camera.getimgURL();
-      console.log($scope.imgURI);
+   Camera.getPicture().then(function(data) {
+      console.log(data);
+      $scope.imgURI = data;
+    }, function(err) {
+      console.err(err);
+      $scope.imgURI = undefined;
+    });
+    console.log($scope.imgURI);
   };
 
 // ionicPopover functions
