@@ -37,29 +37,10 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachIdUploadCtrl', ['$scope',
-  '$state',
-  '$ionicPopover',
-  '$stateParams',
-  'Storage',
-  // '$cordovaCamera',
-  'Patients',
-  'Camera',
-  
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users) {
 
-  
-  function($scope,
-    $state,
-    $ionicPopover,
-    $stateParams,
-    Storage,
-    // $cordovaCamera,
-    Patients,
-    Camera
-    ) {
-
-  $scope.items = 
-  [
+  $scope.items = [
   { t:"姓名",
     v: ""
   }, 
@@ -108,9 +89,26 @@ angular.module('starter.controllers', ['ionic','starter.services'])
       Storage.set(14,$scope.imgURI);
       // for(i=0;i<temp.length;i++)console.log(temp[i].v);
       // $state.go('coach.home',{'state': $scope.state, 'info' :  infoObject.name},"replace");
+      $scope.upload();
       $state.go('coach.home');
   };
 
+
+  $scope.upload = function(){
+    var DoctorInfo = {
+      "UserId": "sample string 1",
+      "UserName": "sample string 2",
+      "Birthday": 3,
+      "Gender": 4,
+      "IDNo": "sample string 5",
+      "InvalidFlag": 6,
+      "piUserId": "sample string 7",
+      "piTerminalName": "sample string 8",
+      "piTerminalIP": "sample string 9",
+      "piDeviceType": 10
+  };
+    Users.myTrial(DoctorInfo);
+  }
   $scope.onClickCamera = function($event){
     $scope.openPopover($event);
   };
@@ -159,7 +157,8 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 //-----------------------------------------------------------------
 // .fromTemplateUrl() method
   $ionicPopover.fromTemplateUrl('my-popover.html', {
-    scope: $scope
+    scope: $scope,
+    animation: 'slide-in-up'
   }).then(function(popover) {
     $scope.popover = popover;
   });
@@ -170,7 +169,6 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   $scope.closePopover = function() {
     $scope.popover.hide();
   };
-
   //Cleanup the popover when we're done with it!
   $scope.$on('$destroy', function() {
     $scope.popover.remove();
