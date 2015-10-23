@@ -1,10 +1,11 @@
-angular.module('starter.services', ['ngCordova'])
+angular.module('starter.services', ['ngCordova','ngResource'])
 
 .constant('CONFIG', {
   // baseUrl: '/',
   // baseUrl: 'http://10.12.43.168/',
   // ioDefaultNamespace: '10.12.43.168/default',
-  baseUrl: 'http://192.168.1.108/',
+  // baseUrl: 'http://192.168.1.108/',
+  baseUrl: 'http://10.12.43.72:9000/Api/v1/',  //RESTful 服务器
   ioDefaultNamespace: '192.168.1.108/default',
   // baseUrl: 'http://www.go5le.net/',
   // ioDefaultNamespace: 'www.go5le.net/default',
@@ -18,7 +19,7 @@ angular.module('starter.services', ['ngCordova'])
   cameraOptions: {  // 用new的方式创建对象? 可以避免引用同一个内存地址, 可以修改新的对象而不会影响这里的值: 用angular.copy
     quality: 75,
     destinationType: 0,  // Camera.DestinationType = {DATA_URL: 0, FILE_URI: 1, NATIVE_URI: 2};
-    sourceType: 1,  // Camera.PictureSourceType = {PHOTOLIBRARY: 0, CAMERA: 1, SAVEDPHOTOALBUM: 2};
+    sourceType: 0,  // Camera.PictureSourceType = {PHOTOLIBRARY: 0, CAMERA: 1, SAVEDPHOTOALBUM: 2};
     allowEdit: true,  // 会导致照片被正方形框crop, 变成正方形的照片
     encodingType: 0,  // Camera.EncodingType = {JPEG: 0, PNG: 1};
     targetWidth: 100,  // 单位是pix/px, 必须和下面的属性一起出现, 不会改变原图比例?
@@ -100,7 +101,44 @@ angular.module('starter.services', ['ngCordova'])
   serv400: {number: '4008006666', caption: '4008-006-666'}
 })
 
+.factory('Camera', ['$q','$cordovaCamera','CONFIG', function($q,$cordovaCamera,CONFIG) {
+ 
+  return {
+    getPicture: function() {
 
+      var options = { 
+          quality : 75, 
+          destinationType : 0, 
+          sourceType : 0, 
+          allowEdit : true,
+          encodingType: 0,
+          targetWidth: 300,
+          targetHeight: 300,
+           popoverOptions: CONFIG.popoverOptions,
+          saveToPhotoAlbum: false
+      };
+
+     var q = $q.defer();
+     // $cordovaCamera.getPicture(function(imageData) {
+     //    result = "data:image/jpeg;base64," + imageData;
+     //    // console.log(result);
+     //    q.resolve(result);
+     //  }, function(err) {
+     //    q.reject(err);
+     //  }, options);
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+          imgURI = "data:image/jpeg;base64," + imageData;
+          // console.log("succeed" + imageData);
+          q.resolve(imgURI);
+      }, function(err) {
+          // console.log("sth wrong");
+          imgURI = undefined;
+          q.resolve(err);
+      });      
+      return q.promise; //return a promise
+    }
+  }
+}])
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
@@ -151,45 +189,6 @@ angular.module('starter.services', ['ngCordova'])
   };
 })
 
-.factory('Camera', ['$q','$cordovaCamera','CONFIG', function($q,$cordovaCamera,CONFIG) {
- 
-  return {
-    getPicture: function() {
-
-      var options = { 
-          quality : 75, 
-          destinationType : 0, 
-          sourceType : 1, 
-          allowEdit : true,
-          encodingType: 0,
-          targetWidth: 300,
-          targetHeight: 300,
-           popoverOptions: CONFIG.popoverOptions,
-          saveToPhotoAlbum: false
-      };
-
-     var q = $q.defer();
-     // $cordovaCamera.getPicture(function(imageData) {
-     //    result = "data:image/jpeg;base64," + imageData;
-     //    // console.log(result);
-     //    q.resolve(result);
-     //  }, function(err) {
-     //    q.reject(err);
-     //  }, options);
-      $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
-          // console.log("succeed" + imageData);
-          q.resolve(imgURI);
-      }, function(err) {
-          // console.log("sth wrong");
-          imgURI = undefined;
-          q.resolve(err);
-      });      
-      return q.promise;
-    }
-  }
-}])
-
 .factory('Patients',function(){
   //get patients
   //remove certain patients
@@ -230,6 +229,133 @@ angular.module('starter.services', ['ngCordova'])
     }
   };
 }])
+
+
+.factory('Data', ['$resource', '$q', 'CONFIG', '$interval', function ($resource, $q, CONFIG, $interval) {
+  var self = this;
+
+  // self.promises = [];  // 服务是单例, 在一个app实例中只中实例化一次, 刷新页面导致app重新实例化, 服务也重新实例化(初始化)
+  var abort = $q.defer();
+  // self.promises.push(abort);  // 只会存在一个元素: self.promises[0] = abort
+  // console.log(self.promises.length);
+
+  var User = function () {
+    return $resource(CONFIG.baseUrl + ':path/:route', {
+      // baseurl:'localhost', 
+      path:'user',
+      // callback: 'JSON_CALLBACK' //jsonp_flag
+    }, {
+      // register: {method:'POST', params:{route: 'register'}, timeout: 10000},
+      // bulkInsert: {method:'POST', params:{route: 'bulkInsert'}},
+      // insertOne: {method:'POST', params:{route: 'insertOne'}, timeout: 10000},
+      verifyPwd: {method:'POST', params:{route: 'verifyPwd'}, timeout: 10000},
+      verifyUser: {method:'POST', params:{route: 'verifyUser'}, timeout: 10000},
+      login: {method:'POST', params:{route: 'login'}, timeout: 10000},
+      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
+      getInfo: {method:'GET', params:{route: 'getInfo'}, timeout: 10000},
+      getAccInfo: {method:'GET', params:{route: 'getAccInfo'}, timeout: 10000},
+      // getOthersInfo: {method:'POST', params:{route: 'getOthersInfo'}, timeout: 10000},
+      // modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
+      // update: {method:'POST', params:{route: 'update'}, timeout: 10000},
+      updateOne: {method:'POST', params:{route: 'updateOne'}, timeout: 10000},
+      bindBarcode: {method:'POST', params:{route: 'bindBarcode'}, timeout: 10000},
+      updateOnesPwd: {method:'POST', params:{route: 'updateOnesPwd'}, timeout: 10000},
+      updateOneWithSMS: {method:'POST', params:{route: 'updateOneWithSMS'}, timeout: 10000},
+      // remove: {method:'POST', params:{route: 'remove'}, timeout: 10000},
+      // removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000},
+      logout: {method:'GET', params:{route: 'logout'}, timeout: 10000}
+    });
+  };
+  var Insurance = function () {
+    return $resource(CONFIG.baseUrl + ':path/:route', {
+      // baseurl:'localhost', 
+      path:'ince',
+      // callback: 'JSON_CALLBACK' //jsonp_flag
+    }, {
+      getInfo: {method:'POST', params:{route: 'getInfo'}, timeout: 10000},
+      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
+      modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
+      remove: {method:'POST', params:{route: 'remove'}, timeout: 10000},
+      removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000}
+    });
+  };
+  var Consumption = function () {
+    return $resource(CONFIG.baseUrl + ':path/:route', {
+      // baseurl:'localhost', 
+      path:'cons',
+      // callback: 'JSON_CALLBACK' //jsonp_flag
+    }, {
+      insertOne: {method:'POST', params:{route: 'insertOne'}, timeout: 10000},
+      getOne: {method:'POST', params:{route: 'getOne'}, timeout: 10000},
+      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
+      // modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
+      updateOne: {method:'POST', params:{route: 'updateOne'}, timeout: 10000},
+      revoking: {method:'POST', params:{route: 'revoking'}, timeout: 10000}//,
+      // remove: {method:'POST', params:{route: 'remove'}, timeout: 10000},
+      // removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000}
+    });
+  };
+  var Post = function () {
+    return $resource(CONFIG.baseUrl + ':path/:route', {
+      // baseurl:'localhost', 
+      path:'post',
+      // callback: 'JSON_CALLBACK' //jsonp_flag
+    }, {
+      post: {method:'POST', params:{route:'post'}, timeout: 10000},
+      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
+      modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
+      updateOne: {method:'POST', params:{route: 'updateOne'}, timeout: 10000},
+      removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000}
+    });
+  };
+  var Resource = function () {
+    return $resource(CONFIG.baseUrl + ':path/:route', {
+      // baseurl:'localhost', 
+      path:'multer',
+      // callback: 'JSON_CALLBACK' //jsonp_flag
+    }, {
+      rmBrokenFile: {method:'GET', params:{route:'upload'}, timeout: 10000}
+    });
+  };
+  var Interface = function () {
+    return $resource(CONFIG.baseUrl + ':path/:route', {
+      // baseurl:'localhost', 
+      path:'interface',
+      // callback: 'JSON_CALLBACK' //jsonp_flag
+    }, {
+      smsSend: {method:'POST', params:{route:'smsSend'}, timeout: 10000},
+      captchaImg: {method:'GET', params:{route:'captchaImg'}, timeout: 10000}
+    });
+  };
+  self.abort = function ($scope) {
+    abort.resolve();  // resolve()模拟服务器返回status(200), 进入successCallBack(); 如果用reject(), 进入errCallBack()
+    // angular.forEach(self.promises, function (p) { p.resolve();});  // resolve()模拟服务器返回status(200), 进入successCallBack(); 如果用reject(), 进入errCallBack()
+    // $scope.$evalAsync(function () {
+    $interval(function () {  // 因为这里有递归调用的$resource.Insurance.getList(), 所以不能马上恢复设置 abort = $q.defer(); 要加一个延时(将abort = $q.defer()操作放置为下一个event loop的最后一个操作), 否则一旦恢复设置, 只能取消一个request, 后面剩余的递归调用的request由于 abort 又等于 $q.defer(), 会继续执行.
+      // self.promises = [];  // 清空数组
+      abort = $q.defer();
+      // self.promises.push(abort);
+      self.User = User();  // 重新初始化$resource方法(必须在恢复abort = $q.defer();后初始化), 主要是初始化其中的timeout: abort.promise, 因为原来的abort已经resolve()或reject()了
+      self.Insurance = Insurance();
+      self.Consumption = Consumption();
+      self.Post = Post();
+      self.Resource = Resource();
+      self.Interface = Interface();
+    }, 0, 1);
+    // });
+  };
+
+  self.User = User();
+  self.Insurance = Insurance();
+  self.Consumption = Consumption();
+  self.Post = Post();
+  self.Resource = Resource();
+  self.Interface = Interface();
+
+  return self;
+}])
+
+
 .factory('PageFunc', ['$ionicPopup', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$ionicModal', '$timeout', function ($ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate, $ionicModal, $timeout) {
   return {
     message: function (_msg, _time, _title) {
@@ -413,129 +539,8 @@ angular.module('starter.services', ['ngCordova'])
     }
   };
 }])
-.factory('Data', ['$resource', '$q', 'CONFIG', '$interval', function ($resource, $q, CONFIG, $interval) {
-  var self = this;
 
-  // self.promises = [];  // 服务是单例, 在一个app实例中只中实例化一次, 刷新页面导致app重新实例化, 服务也重新实例化(初始化)
-  var abort = $q.defer();
-  // self.promises.push(abort);  // 只会存在一个元素: self.promises[0] = abort
-  // console.log(self.promises.length);
 
-  var User = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {
-      // baseurl:'localhost', 
-      path:'user',
-      // callback: 'JSON_CALLBACK' //jsonp_flag
-    }, {
-      // register: {method:'POST', params:{route: 'register'}, timeout: 10000},
-      // bulkInsert: {method:'POST', params:{route: 'bulkInsert'}},
-      // insertOne: {method:'POST', params:{route: 'insertOne'}, timeout: 10000},
-      verifyPwd: {method:'POST', params:{route: 'verifyPwd'}, timeout: 10000},
-      verifyUser: {method:'POST', params:{route: 'verifyUser'}, timeout: 10000},
-      login: {method:'POST', params:{route: 'login'}, timeout: 10000},
-      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
-      getInfo: {method:'GET', params:{route: 'getInfo'}, timeout: 10000},
-      getAccInfo: {method:'GET', params:{route: 'getAccInfo'}, timeout: 10000},
-      // getOthersInfo: {method:'POST', params:{route: 'getOthersInfo'}, timeout: 10000},
-      // modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
-      // update: {method:'POST', params:{route: 'update'}, timeout: 10000},
-      updateOne: {method:'POST', params:{route: 'updateOne'}, timeout: 10000},
-      bindBarcode: {method:'POST', params:{route: 'bindBarcode'}, timeout: 10000},
-      updateOnesPwd: {method:'POST', params:{route: 'updateOnesPwd'}, timeout: 10000},
-      updateOneWithSMS: {method:'POST', params:{route: 'updateOneWithSMS'}, timeout: 10000},
-      // remove: {method:'POST', params:{route: 'remove'}, timeout: 10000},
-      // removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000},
-      logout: {method:'GET', params:{route: 'logout'}, timeout: 10000}
-    });
-  };
-  var Insurance = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {
-      // baseurl:'localhost', 
-      path:'ince',
-      // callback: 'JSON_CALLBACK' //jsonp_flag
-    }, {
-      getInfo: {method:'POST', params:{route: 'getInfo'}, timeout: 10000},
-      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
-      modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
-      remove: {method:'POST', params:{route: 'remove'}, timeout: 10000},
-      removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000}
-    });
-  };
-  var Consumption = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {
-      // baseurl:'localhost', 
-      path:'cons',
-      // callback: 'JSON_CALLBACK' //jsonp_flag
-    }, {
-      insertOne: {method:'POST', params:{route: 'insertOne'}, timeout: 10000},
-      getOne: {method:'POST', params:{route: 'getOne'}, timeout: 10000},
-      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
-      // modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
-      updateOne: {method:'POST', params:{route: 'updateOne'}, timeout: 10000},
-      revoking: {method:'POST', params:{route: 'revoking'}, timeout: 10000}//,
-      // remove: {method:'POST', params:{route: 'remove'}, timeout: 10000},
-      // removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000}
-    });
-  };
-  var Post = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {
-      // baseurl:'localhost', 
-      path:'post',
-      // callback: 'JSON_CALLBACK' //jsonp_flag
-    }, {
-      post: {method:'POST', params:{route:'post'}, timeout: 10000},
-      getList: {method:'POST', params:{route: 'getList'}, timeout: abort.promise},
-      modify: {method:'POST', params:{route: 'modify'}, timeout: 10000},
-      updateOne: {method:'POST', params:{route: 'updateOne'}, timeout: 10000},
-      removeOne: {method:'GET', params:{route: 'removeOne'}, timeout: 10000}
-    });
-  };
-  var Resource = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {
-      // baseurl:'localhost', 
-      path:'multer',
-      // callback: 'JSON_CALLBACK' //jsonp_flag
-    }, {
-      rmBrokenFile: {method:'GET', params:{route:'upload'}, timeout: 10000}
-    });
-  };
-  var Interface = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {
-      // baseurl:'localhost', 
-      path:'interface',
-      // callback: 'JSON_CALLBACK' //jsonp_flag
-    }, {
-      smsSend: {method:'POST', params:{route:'smsSend'}, timeout: 10000},
-      captchaImg: {method:'GET', params:{route:'captchaImg'}, timeout: 10000}
-    });
-  };
-  self.abort = function ($scope) {
-    abort.resolve();  // resolve()模拟服务器返回status(200), 进入successCallBack(); 如果用reject(), 进入errCallBack()
-    // angular.forEach(self.promises, function (p) { p.resolve();});  // resolve()模拟服务器返回status(200), 进入successCallBack(); 如果用reject(), 进入errCallBack()
-    // $scope.$evalAsync(function () {
-    $interval(function () {  // 因为这里有递归调用的$resource.Insurance.getList(), 所以不能马上恢复设置 abort = $q.defer(); 要加一个延时(将abort = $q.defer()操作放置为下一个event loop的最后一个操作), 否则一旦恢复设置, 只能取消一个request, 后面剩余的递归调用的request由于 abort 又等于 $q.defer(), 会继续执行.
-      // self.promises = [];  // 清空数组
-      abort = $q.defer();
-      // self.promises.push(abort);
-      self.User = User();  // 重新初始化$resource方法(必须在恢复abort = $q.defer();后初始化), 主要是初始化其中的timeout: abort.promise, 因为原来的abort已经resolve()或reject()了
-      self.Insurance = Insurance();
-      self.Consumption = Consumption();
-      self.Post = Post();
-      self.Resource = Resource();
-      self.Interface = Interface();
-    }, 0, 1);
-    // });
-  };
-
-  self.User = User();
-  self.Insurance = Insurance();
-  self.Consumption = Consumption();
-  self.Post = Post();
-  self.Resource = Resource();
-  self.Interface = Interface();
-
-  return self;
-}])
 .factory('Token', ['Storage', 'jwtHelper', 'ACL', function (Storage, jwtHelper, ACL) {
   return {
     // isAuthenticated: false,
@@ -565,6 +570,7 @@ angular.module('starter.services', ['ngCordova'])
     }
   };
 }])
+
 .factory('User', ['$rootScope', 'PageFunc', '$ionicLoading', '$ionicActionSheet', '$cordovaCamera', '$cordovaFileTransfer', 'CONFIG', '$timeout', 'Storage', 'Data', 'Token', '$state', '$ionicHistory', '$ionicModal', '$q', '$ionicSlideBoxDelegate', 'jwtHelper', '$http', '$interval', function ($rootScope, PageFunc, $ionicLoading, $ionicActionSheet, $cordovaCamera, $cordovaFileTransfer, CONFIG, $timeout, Storage, Data, Token, $state, $ionicHistory, $ionicModal, $q, $ionicSlideBoxDelegate, jwtHelper, $http, $interval) {
   var self = this;
   self.takePicsModal = function ($scope, images) {

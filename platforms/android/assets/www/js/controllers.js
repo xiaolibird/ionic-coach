@@ -37,29 +37,10 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachIdUploadCtrl', ['$scope',
-  '$state',
-  '$ionicPopover',
-  '$stateParams',
-  'Storage',
-  // '$cordovaCamera',
-  'Patients',
-  'Camera',
-  
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera) {
 
-  
-  function($scope,
-    $state,
-    $ionicPopover,
-    $stateParams,
-    Storage,
-    // $cordovaCamera,
-    Patients,
-    Camera
-    ) {
-
-  $scope.items = 
-  [
+  $scope.items = [
   { t:"姓名",
     v: ""
   }, 
@@ -159,7 +140,8 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 //-----------------------------------------------------------------
 // .fromTemplateUrl() method
   $ionicPopover.fromTemplateUrl('my-popover.html', {
-    scope: $scope
+    scope: $scope,
+    animation: 'slide-in-up'
   }).then(function(popover) {
     $scope.popover = popover;
   });
@@ -170,7 +152,6 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   $scope.closePopover = function() {
     $scope.popover.hide();
   };
-
   //Cleanup the popover when we're done with it!
   $scope.$on('$destroy', function() {
     $scope.popover.remove();

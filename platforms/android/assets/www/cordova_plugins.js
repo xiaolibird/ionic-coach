@@ -53,6 +53,17 @@ module.exports = [
         "file": "plugins/cordova-plugin-whitelist/whitelist.js",
         "id": "cordova-plugin-whitelist.whitelist",
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-calendar/www/Calendar.js",
+        "id": "cordova-plugin-calendar.Calendar",
+        "clobbers": [
+            "Calendar"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-calendar/test/tests.js",
+        "id": "cordova-plugin-calendar.tests"
     }
 ];
 module.exports.metadata = 
@@ -61,7 +72,8 @@ module.exports.metadata =
     "cordova-plugin-camera": "1.2.0",
     "cordova-plugin-console": "1.0.1",
     "cordova-plugin-device": "1.0.1",
-    "cordova-plugin-whitelist": "1.0.0"
+    "cordova-plugin-whitelist": "1.0.0",
+    "cordova-plugin-calendar": "4.4.4"
 }
 // BOTTOM OF METADATA
 });
