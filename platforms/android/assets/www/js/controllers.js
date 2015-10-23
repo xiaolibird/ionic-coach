@@ -28,7 +28,7 @@
 // });
 
 
-angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
+angular.module('starter.controllers', ['ionic','starter.services'])
 
 
 // .config(function($compileProvider){
@@ -42,7 +42,9 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   '$ionicPopover',
   '$stateParams',
   'Storage',
-  '$cordovaCamera',
+  // '$cordovaCamera',
+  'Patients',
+  'Camera',
   
 
   
@@ -51,7 +53,9 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
     $ionicPopover,
     $stateParams,
     Storage,
-    $cordovaCamera
+    // $cordovaCamera,
+    Patients,
+    Camera
     ) {
 
   $scope.items = 
@@ -71,7 +75,7 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   ];
 
   $scope.state = "未上传";
-    
+  
   //the user skip this step put state to unuploaded.
   $scope.onClickSkip = function(){     
       $scope.state = "未上传";
@@ -117,17 +121,14 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 
 
   $scope.onClickCameraPhotos = function(){
-    //bla
+  
    console.log("选个照片"); 
-   
-   
-   
+  //blablabla
    $scope.closePopover();
   };
 
   $scope.onClickCameraCamera = function(){
-    //bla
-    console.log("要拍照了！");
+    // console.log("要拍照了！");
     // Camera.getPicture().then(function(imageURI){
     //   console.log(imageURI);
     // },function(err){
@@ -138,63 +139,22 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
   
   $scope.getPhoto = function() {
     console.log("要拍照了！");
-    // console.log(navigator.camera);
-
-    // $scope.imgURI = Camera.getPicture();   
-    // Camera.getPicture().then(function(imageURI) {
-    //   console.log(imageURI);
-    //   $scope.lastPhoto = imageURI;
-    // }, function(err) {
-    //   console.err(err);
-    // }, {
-    //   quality: 75,
-    //   targetWidth: 320,
-    //   targetHeight: 320,
-    //   saveToPhotoAlbum: false
-    // });
     $scope.takePicture();
     $scope.closePopover();
   };
 
   $scope.takePicture = function() {
-      var options = { 
-          quality : 75, 
-          destinationType : Camera.DestinationType.DATA_URL, 
-          sourceType : Camera.PictureSourceType.CAMERA, 
-          allowEdit : true,
-          encodingType: Camera.EncodingType.JPEG,
-          targetWidth: 300,
-          targetHeight: 300,
-          popoverOptions: CameraPopoverOptions,
-          saveToPhotoAlbum: true
-      };
-
-      $cordovaCamera.getPicture(options).then(function(imageData) {
-          $scope.imgURI = "data:image/jpeg;base64," + imageData;
-      }, function(err) {
-          // An error occured. Show a message to the user
-      });
+      
+   Camera.getPicture().then(function(data) {
+      console.log(data);
+      $scope.imgURI = data;
+    }, function(err) {
+      console.err(err);
+      $scope.imgURI = undefined;
+    });
+    console.log($scope.imgURI);
   };
 
-  //   $scope.takePicture = function() {
-  //     var options = { 
-  //         quality : 75, 
-  //         destinationType : Camera.DestinationType.DATA_URL, 
-  //         sourceType : Camera.PictureSourceType.CAMERA, 
-  //         allowEdit : true,
-  //         encodingType: Camera.EncodingType.JPEG,
-  //         targetWidth: 300,
-  //         targetHeight: 300,
-  //         popoverOptions: CameraPopoverOptions,
-  //         saveToPhotoAlbum: false
-  //     };
-
-  //     $cordovaCamera.getPicture(options).then(function(imageData) {
-  //         $scope.imgURI = "data:image/jpeg;base64," + imageData;
-  //     }, function(err) {
-  //         // An error occured. Show a message to the user
-  //     });
-  // }    
 // ionicPopover functions
 //-----------------------------------------------------------------
 // .fromTemplateUrl() method
@@ -231,7 +191,6 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 
   //being checked
 
-
   //the user skip this step put state to unuploaded.
 
 }])
@@ -262,16 +221,17 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
    // console.log($scope.infom);
    
   $scope.onClickPersonalInfo = function(){
-      $state.go('coach.personalinfo');
+      $state.go('personalinfo');
   };
 
   $scope.onClickPersonalConfig = function(){
-      $state.go('coach.config');
+      $state.go('config');
   };
 
   $scope.onClickPersonalSchedule = function(){
-      $state.go('coach.schedule');
+      $state.go('schedule');
   };
+
 }])
 
 
@@ -284,9 +244,11 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 }])
 
 
+
 // Coach Personal Infomation Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) {
+.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory',
+  function($scope,$state,$ionicHistory) {
   $scope.onClickBackward = function(){
        $ionicHistory.goBack();
   };
@@ -295,13 +257,88 @@ angular.module('starter.controllers', ['ionic','starter.services','ngCordova'])
 
 // Coach Personal Schedule Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalScheduleCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) {
+.controller('CoachScheduleCtrl', ['$scope','$state','$ionicHistory','$http',
+  function($scope,$state,$ionicHistory,$http) {
+
+  $http.get('js/data.json').success(function(data) {
+    $scope.calendar = data.calendar; 
+    // $scope.whichartist= $state.params.aId;
+    // console.log($scope.whichartist);
+    $scope.data = { showDelete: false, showReorder: false };
+
+  $scope.onItemDelete = function(dayIndex,item) {
+    // $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+    $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+  }
+
+  $scope.toggleStar = function(item) {
+   item.star = !item.star;
+  }
+
   $scope.onClickBackward = function(){
      $ionicHistory.goBack();
-  };
+  }
+
+  $scope.doRefresh =function() {
+
+      $http.get('js/data.json').success(function(data) {
+      $scope.patients = data.calendar;
+      $scope.$broadcast('scroll.refreshComplete');
+
+    });
+  }
+  });
+
 }])
 
+.controller('CoachMessageCtrl',function(){
 
+})
+
+.controller('CoachMeCtrl',function(){
+
+})
+
+.controller('CoachPatientsCtrl', ['Patients','$scope','$http','$state',
+  function(Patients,$scope,$http,$state){
+  // $scope.chats = Chats.all(); 
+  // $scope.remove = function(chat) {
+  //   Chats.remove(chat);
+  // };
+  // $scope.patients = Patients.all();
+  $http.get('js/data.json').success(function(data) {
+    $scope.patients = data.artists; 
+    $scope.whichartist= $state.params.aId;
+    // console.log($scope.whichartist);
+    $scope.data = { showDelete: false, showReorder: false };
+
+    $scope.moveItem = function(item, fromIndex, toIndex) {
+          $scope.patients.splice(fromIndex, 1);
+          $scope.patients.splice(toIndex, 0, item);
+    }
+
+    $scope.onItemDelete = function(item) {
+      $scope.patients.splice($scope.patients.indexOf(item), 1);
+    }
+
+    $scope.toggleStar = function(item) {
+     item.star = !item.star;
+    }
+
+    $scope.doRefresh =function() {
+        $http.get('js/data.json').success(function(data) {
+        $scope.patients = data.artists;
+        $scope.$broadcast('scroll.refreshComplete'); 
+      });
+    }
+  });
+
+
+}])
+
+// .controller('CoachPatientsDetailController',function(){
+
+// })
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
