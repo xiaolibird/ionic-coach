@@ -34,6 +34,7 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
   $scope.state = "未提交";
   
+  $scope.imgURI = "img/Barot_Bellingham_tn.jpg"
   //the user skip this step put state to unuploaded.
   $scope.onClickSkip = function(){     
       $scope.state = "未提交";
@@ -54,18 +55,18 @@ angular.module('starter.controllers', ['ionic','starter.services'])
         dept: $scope.DtInfo[3].v
       };
 
-      console.log($scope.Info);
-      console.log(DtInfo2);
+      // console.log($scope.Info);
+      // console.log(DtInfo2);
 
       var userInfo = {
         BasicInfo : $scope.Info,
         DtInfo : DtInfo2
       }
       var objStr=JSON.stringify(userInfo);
-      console.log(userInfo);
+      // console.log(userInfo);
 
       Storage.set("userInfo",objStr);
-      Storage.set(130,$scope.state);
+      Storage.set(13,$scope.state);
       // Storage.set(13000);
       // Storage.set(131,$scope.DtInfo[0].v);
       // Storage.set(132,$scope.DtInfo[1].v);
@@ -74,7 +75,7 @@ angular.module('starter.controllers', ['ionic','starter.services'])
       Storage.set(14,$scope.imgURI);
       // for(i=0;i<temp.length;i++)console.log(temp[i].v);
       // $state.go('coach.home',{'state': $scope.state, 'info' :  infoObject.name},"replace");
-      // $scope.upload();
+      $scope.upload();
       $state.go('coach.i',{},"replace");
   };
 
@@ -82,22 +83,25 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   $scope.upload = function(){
 
     var DoctorInfo = {
-      UserId: "WL",
-      UserName: "WL",
+      UserId: "ZXF",
+      UserName: "ZXF",
       Birthday: 19930418,
       Gender: 1,
-      IDNo: "WL",
+      IDNo: "ZXF",
       InvalidFlag: 0,
-      piUserId: "WL",
-      piTerminalName: "WL",
-      piTerminalIP: "WL",
+      piUserId: "ZXF",
+      piTerminalName: "ZXFZXF",
+      piTerminalIP: "ZXF",
       piDeviceType: 0
   };
 
     var responce = Users.myTrial(DoctorInfo);
     
-    var temp = Users.myTrial2("WL");
-    console.log("返回的数据" + temp );
+    var temp = Users.myTrial2("ZXF");
+
+    var temp2 = Camera.uploadPicture($scope.imgURI);
+    // var temp2 = Camera.uploadPicture2($scope.imgURI);
+    console.log("返回的数据" + temp2 );
   };
     //-----------------------------------------------------------
 
@@ -113,7 +117,7 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   $scope.onClickCameraPhotos = function(){
   
    console.log("选个照片"); 
-  //blablabla
+   $scope.choosePhotos();
    $scope.closePopover();
   };
 
@@ -134,17 +138,26 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   };
 
   $scope.takePicture = function() {
-      
    Camera.getPicture().then(function(data) {
-      console.log(data);
+      // console.log(data);
       $scope.imgURI = data;
     }, function(err) {
-      console.err(err);
+      // console.err(err);
       $scope.imgURI = undefined;
     });
-    console.log($scope.imgURI);
+    // console.log($scope.imgURI);
   };
-
+  
+  $scope.choosePhotos = function() {
+   Camera.getPictureFromPhotos().then(function(data) {
+      // console.log(data);
+      $scope.imgURI = data;
+    }, function(err) {
+      // console.err(err);
+      $scope.imgURI = undefined;
+    });
+    // conso
+  }
     // ionicPopover functions
     //-----------------------------------------------------------------
     // .fromTemplateUrl() method
@@ -280,7 +293,7 @@ angular.module('starter.controllers', ['ionic','starter.services'])
    // $scope.company = Storage.get(132);
    // $scope.position = Storage.get(133);
    // $scope.selfintro = Storage.get(134);
-   // $scope.imgURI = Storage.get(14);
+   $scope.imgURI = Storage.get(14);
    $scope.userInfo = JSON.parse(Storage.get("userInfo"));
 
   $scope.onClickBackward = function(){

@@ -5,6 +5,9 @@
 
 .item-divider {
   background-color: #FEE8D6;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000000;
 }
 
 .bar-positive, .tabs-positive>.tabs {

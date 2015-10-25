@@ -30,8 +30,8 @@
 </ion-list>
 
 <!-- <img ng-src="{{lastPhoto}}" style="max-width: 100%"> -->
-<img ng-show="imgURI != undefined" ng-src="{{imgURI}}" height=100 width =100>
-<img ng-show="imgURI == undefined" ng-src="img/plus.png" height=100 width=100>
+<img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}" height=100 width =100>
+<img ng-show="imgURI == undefined" ng-click="onClickCamera($event)" ng-src="img/plus.png" height=100 width=100>
 
 <!--  {{"http://placehold.it/300?text=placehold.it+fuck!"}}
  --><!--   <ion-list>

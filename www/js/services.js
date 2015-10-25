@@ -1,18 +1,11 @@
 angular.module('starter.services', ['ngCordova','ngResource'])
 
 .constant('CONFIG', {
-  // baseUrl: '/',
-  // baseUrl: 'http://10.12.43.168/',
-  // ioDefaultNamespace: '10.12.43.168/default',
-  // baseUrl: 'http://192.168.1.108/',
-  baseUrl: 'http://10.12.43.72:9000/Api/v1/',  //RESTful 服务器
-  // ioDefaultNamespace: '192.168.1.108/default',
-  // baseUrl: 'http://www.go5le.net/',
-  // ioDefaultNamespace: 'www.go5le.net/default',
-  // baseUrl: 'http://app.xiaoyangbao.net/',
-  // baseUrl: 'https://app.xiaoyangbao.net/',  // ssl访问
-  // ioDefaultNamespace: 'app.xiaoyangbao.net/default',
 
+  baseUrl: 'http://10.12.43.72:9000/Api/v1/',  //RESTful 服务器
+  ImageAddressIP: "http://121.43.107.106:8088",
+  ImageAddressFile : "/PersonalPhoto",
+  // ImageAddress = ImageAddressIP + ImageAddressFile + "/" + DoctorId + ".jpg";
   consReceiptUploadPath: 'cons/receiptUpload',
   userResUploadPath: 'user/resUpload',
 
@@ -57,7 +50,7 @@ angular.module('starter.services', ['ngCordova','ngResource'])
   temp: ""
 })
 
-.factory('Camera', ['$q','$cordovaCamera','CONFIG', function($q,$cordovaCamera,CONFIG) {
+.factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) {
  
   return {
     getPicture: function() {
@@ -70,18 +63,12 @@ angular.module('starter.services', ['ngCordova','ngResource'])
           encodingType: 0,
           targetWidth: 300,
           targetHeight: 300,
-           popoverOptions: CONFIG.popoverOptions,
+          popoverOptions: CONFIG.popoverOptions,
           saveToPhotoAlbum: false
       };
 
      var q = $q.defer();
-     // $cordovaCamera.getPicture(function(imageData) {
-     //    result = "data:image/jpeg;base64," + imageData;
-     //    // console.log(result);
-     //    q.resolve(result);
-     //  }, function(err) {
-     //    q.reject(err);
-     //  }, options);
+
       $cordovaCamera.getPicture(options).then(function(imageData) {
           imgURI = "data:image/jpeg;base64," + imageData;
           // console.log("succeed" + imageData);
@@ -92,58 +79,85 @@ angular.module('starter.services', ['ngCordova','ngResource'])
           q.resolve(err);
       });      
       return q.promise; //return a promise
+    },
+
+    getPictureFromPhotos: function(){
+      var options = { 
+          quality : 75, 
+          destinationType : 0, 
+          sourceType : 0, 
+          allowEdit : true,
+          encodingType: 0,
+          targetWidth: 300,
+          targetHeight: 300
+      };
+        //从相册获得的照片不能被裁减 调研~
+     var q = $q.defer();
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+          imgURI = "data:image/jpeg;base64," + imageData;
+          // console.log("succeed" + imageData);
+          q.resolve(imgURI);
+      }, function(err) {
+          // console.log("sth wrong");
+          imgURI = undefined;
+          q.resolve(err);
+      });      
+      return q.promise; //return a promise      
+    },
+
+    uploadPicture : function(imgURI){
+        // document.addEventListener('deviceready', onReadyFunction,false);
+        // function onReadyFunction(){
+          var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
+          var options = {
+            fileKey : "file",
+            fileName : "ZXF" + ".jpg",
+            chunkedMode : true,
+            mimeType : "image/jpeg"
+          };
+          var q = $q.defer();
+          console.log("jinlaile");
+          $cordovaFileTransfer.upload(uri,imgURI,options)
+            .then( function(r){
+              console.log("Code = " + r.responseCode);
+              console.log("Response = " + r.response);
+              console.log("Sent = " + r.bytesSent);
+              q.resolve(r);        
+            }, function(err){
+              alert("An error has occurred: Code = " + error.code);
+              console.log("upload error source " + error.source);
+              console.log("upload error target " + error.target);
+              q.resolve(error);          
+            }, function (progress) {
+              console.log(progress);
+            })
+
+            ;
+          return q.promise;  
+        // }
+
+
+        // var ft = new FileTransfer();
+        // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
+      
+    },
+
+  uploadPicture2: function(imgURI){
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+   // as soon as this function is called FileTransfer "should" be defined
+      console.log(FileTransfer);
+      console.log(File);
     }
   }
+
+
+}
+  
 }])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
 
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
-})
 
 .factory('Patients',function(){
   //get patients
@@ -211,7 +225,7 @@ angular.module('starter.services', ['ngCordova','ngResource'])
   var User = function () {
 
     // console.log("在User函数内,"+"UrlPartials =  " + getUrlPartials() );
-    console.log(Storage.get(13131313) + '/'+'DoctorInfo');
+    // console.log(Storage.get(13131313) + '/'+'DoctorInfo');
     return $resource(CONFIG.baseUrl + ':path/:route', {
     
       path:'Users',
@@ -222,14 +236,16 @@ angular.module('starter.services', ['ngCordova','ngResource'])
     });
   };
 
-  var User2 = function () {
-    return $resource(CONFIG.baseUrl + ':path/'+ urlPartials + '/:route', {
+  var User2 = function (data) {
+
+
+    return $resource(CONFIG.baseUrl + ':path/'+':userid'+'/:route', {
     
       path:'Users',
       
     }, {
       // myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
-      myTrialGET: {method:'GET', params:{route:'DoctorInfo'}, timeout: 10000}
+      myTrialGET: {method:'GET', params:{userid: data,route:'DoctorInfo'}, timeout: 10000}
     });
   };
 
@@ -239,19 +255,19 @@ angular.module('starter.services', ['ngCordova','ngResource'])
       abort = $q.defer();
       self.User = User();
       self.User2 = User2(); 
-      self.setUrlPartials = setUrlPartials();
-      self.getUrlPartials = getUrlPartials();
+      // self.setUrlPartials = setUrlPartials();
+      // self.getUrlPartials = getUrlPartials();
     }, 0, 1);
   };
 
   self.User = User();
   self.User2 = User2(); 
-  self.setUrlPartials = setUrlPartials();
-  self.getUrlPartials = getUrlPartials();
+  // self.setUrlPartials = setUrlPartials();
+  // self.getUrlPartials = getUrlPartials();
   return self;
 }])
 
-.factory('Users', ['$q', '$http', 'Data','Storage',function ($q, $http, Data,Storage) {
+.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) {
   var self = this;
 
   self.myTrial = function (DoctorInfo) {
@@ -265,10 +281,19 @@ angular.module('starter.services', ['ngCordova','ngResource'])
   };
 
   self.myTrial2 = function (userid) {
+    
+    // Storage.set(13131313,userid);
+    //由于API中要求有userID变量 DATA 中只能写死 所以动态生成一个方法
+    var temp = $resource(CONFIG.baseUrl + ':path/:uid/:route', {
+      path:'Users',  
+    }, {
+      myTrialGET: {method:'GET', params:{uid: userid,route:'DoctorInfo'}, timeout: 10000}
+    });
+
+
     var deferred = $q.defer();
-    Storage.set(13131313,userid);
-    Data.User.myTrialGET({uid:userid}, function (data, headers) {
-      console.log(data)
+    temp.myTrialGET({}, function (data, headers) {
+      console.log("获得了数据"+data)
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);

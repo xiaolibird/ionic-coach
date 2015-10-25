@@ -16,7 +16,8 @@
   },
   "cordovaPlugins": [
     "cordova-plugin-device",
-    "cordova-plugin-console"
+    "cordova-plugin-console",
+    "org.apache.cordova.file"
   ],
   "cordovaPlatforms": [
     "android"
