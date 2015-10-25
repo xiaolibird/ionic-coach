@@ -37,7 +37,7 @@
     <ion-list show-delete="data.showDelete" show-reorder="data.showReorder" >
   		
       <ion-item ng-class="{'star': patient.star}"  
-      ng-repeat ="patient in patients | filter: query " 
+      collection-repeat ="patient in patients | filter: query " 
       class ="item-thumbnail-left
       item-icon-right 
       item-text-wrap"  href="#/coach/patients/{{patient.shortname}}">

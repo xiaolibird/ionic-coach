@@ -1,33 +1,3 @@
-// angular.module('starter.controllers', [])
-
-// .controller('DashCtrl', function($scope) {})
-
-// .controller('ChatsCtrl', function($scope, Chats) {
-//   // With the new view caching in Ionic, Controllers are only called
-//   // when they are recreated or on app start, instead of every page change.
-//   // To listen for when this page is active (for example, to refresh data),
-//   // listen for the $ionicView.enter event:
-//   //
-//   //$scope.$on('$ionicView.enter', function(e) {
-//   //});
-
-//   $scope.chats = Chats.all();
-//   $scope.remove = function(chat) {
-//     Chats.remove(chat);
-//   };
-// })
-
-// .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-//   $scope.chat = Chats.get($stateParams.chatId);
-// })
-
-// .controller('AccountCtrl', function($scope) {
-//   $scope.settings = {
-//     enableFriends: true
-//   };
-// });
-
-
 angular.module('starter.controllers', ['ionic','starter.services'])
 
 
@@ -37,79 +7,103 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachIdUploadCtrl', ['$scope',
-  '$state',
-  '$ionicPopover',
-  '$stateParams',
-  'Storage',
-  // '$cordovaCamera',
-  'Patients',
-  'Camera',
-  
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users) {
 
-  
-  function($scope,
-    $state,
-    $ionicPopover,
-    $stateParams,
-    Storage,
-    // $cordovaCamera,
-    Patients,
-    Camera
-    ) {
-
-  $scope.items = 
-  [
-  { t:"姓名",
-    v: ""
-  }, 
-  { t:"工作单位",
-    v: ""
+  $scope.DtInfo = [
+  { t:"单位",
+    v: "某三本大学"
   }, 
   { t:"职务",
-    v: ""
+    v: "搬砖"
   }, 
-  { t:"个人简介",
-    v: ""
+  { t:"Level",
+    v: "233"
+  }, 
+  { t:"科室",
+    v: "217"
   }
   ];
 
-  $scope.state = "未上传";
+  $scope.Info = {
+    name: "叶良辰",
+    gender: "男",
+    birthday:"19980808",
+    id: 1212
+  }
+
+  $scope.state = "未提交";
   
+  $scope.imgURI = "img/Barot_Bellingham_tn.jpg"
   //the user skip this step put state to unuploaded.
   $scope.onClickSkip = function(){     
-      $scope.state = "未上传";
+      $scope.state = "未提交";
       Storage.set(13,$scope.state);
-      $state.go('coach.home',{'state': $scope.state,'info':null},"replace");
+      $state.go('coach.i',{'state': $scope.state,'info':null},"replace");
   };
 
   //the user submit
   $scope.onClickSubmit = function(){
       
-      // $scope.state = "审核中";
-      // $scope.name = "hehe"
-      // var temp = $scope.items;
-      // console.log($scope.items[0].v);
-      // 可能要在service里封装一个将对象数组变成对象数组的方法
-      // var i = 0;
-      // var infoObject = {
-      //   name: $scope.items[0].v,
-      //   company: $scope.items[1].v,
-      //   position: $scope.items[2].v,
-      //   intro: $scope.items[3].v,
-      //   imageURI:''
-      // };
+      $scope.state = "审核中";
+      //用户的信息封装进完整的一个对象里面 存localstorage 全局调用 JSON化 反 JSON 化
 
+      var DtInfo2 = {
+        unitname: $scope.DtInfo[0].v,
+        jobTitle: $scope.DtInfo[1].v,
+        level: $scope.DtInfo[2].v,
+        dept: $scope.DtInfo[3].v
+      };
+
+      // console.log($scope.Info);
+      // console.log(DtInfo2);
+
+      var userInfo = {
+        BasicInfo : $scope.Info,
+        DtInfo : DtInfo2
+      }
+      var objStr=JSON.stringify(userInfo);
+      // console.log(userInfo);
+
+      Storage.set("userInfo",objStr);
       Storage.set(13,$scope.state);
-      Storage.set(131,$scope.items[0].v);
-      Storage.set(132,$scope.items[1].v);
-      Storage.set(133,$scope.items[2].v);
-      Storage.set(134,$scope.items[3].v);
+      // Storage.set(13000);
+      // Storage.set(131,$scope.DtInfo[0].v);
+      // Storage.set(132,$scope.DtInfo[1].v);
+      // Storage.set(133,$scope.DtInfo[2].v);
+      // Storage.set(134,$scope.DtInfo[3].v);
       Storage.set(14,$scope.imgURI);
       // for(i=0;i<temp.length;i++)console.log(temp[i].v);
       // $state.go('coach.home',{'state': $scope.state, 'info' :  infoObject.name},"replace");
-      $state.go('coach.home');
+      $scope.upload();
+      $state.go('coach.i',{},"replace");
   };
+
+  //upload
+  $scope.upload = function(){
+
+    var DoctorInfo = {
+      UserId: "ZXF",
+      UserName: "ZXF",
+      Birthday: 19930418,
+      Gender: 1,
+      IDNo: "ZXF",
+      InvalidFlag: 0,
+      piUserId: "ZXF",
+      piTerminalName: "ZXFZXF",
+      piTerminalIP: "ZXF",
+      piDeviceType: 0
+  };
+
+    var responce = Users.myTrial(DoctorInfo);
+    
+    var temp = Users.myTrial2("ZXF");
+
+    var temp2 = Camera.uploadPicture($scope.imgURI);
+    // var temp2 = Camera.uploadPicture2($scope.imgURI);
+    console.log("返回的数据" + temp2 );
+  };
+    //-----------------------------------------------------------
 
   $scope.onClickCamera = function($event){
     $scope.openPopover($event);
@@ -123,7 +117,7 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   $scope.onClickCameraPhotos = function(){
   
    console.log("选个照片"); 
-  //blablabla
+   $scope.choosePhotos();
    $scope.closePopover();
   };
 
@@ -144,22 +138,32 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   };
 
   $scope.takePicture = function() {
-      
    Camera.getPicture().then(function(data) {
-      console.log(data);
+      // console.log(data);
       $scope.imgURI = data;
     }, function(err) {
-      console.err(err);
+      // console.err(err);
       $scope.imgURI = undefined;
     });
-    console.log($scope.imgURI);
+    // console.log($scope.imgURI);
   };
-
-// ionicPopover functions
-//-----------------------------------------------------------------
-// .fromTemplateUrl() method
+  
+  $scope.choosePhotos = function() {
+   Camera.getPictureFromPhotos().then(function(data) {
+      // console.log(data);
+      $scope.imgURI = data;
+    }, function(err) {
+      // console.err(err);
+      $scope.imgURI = undefined;
+    });
+    // conso
+  }
+    // ionicPopover functions
+    //-----------------------------------------------------------------
+    // .fromTemplateUrl() method
   $ionicPopover.fromTemplateUrl('my-popover.html', {
-    scope: $scope
+    scope: $scope,
+    animation: 'slide-in-up'
   }).then(function(popover) {
     $scope.popover = popover;
   });
@@ -170,7 +174,6 @@ angular.module('starter.controllers', ['ionic','starter.services'])
   $scope.closePopover = function() {
     $scope.popover.hide();
   };
-
   //Cleanup the popover when we're done with it!
   $scope.$on('$destroy', function() {
     $scope.popover.remove();
@@ -184,8 +187,8 @@ angular.module('starter.controllers', ['ionic','starter.services'])
     // Execute action
   });
 
-// ionicPopover functions
-//------------------------------------------------------------
+  // ionicPopover functions
+  //------------------------------------------------------------
 
   //the user did not fill in all the necessary info put state to unuploaded.
 
@@ -197,13 +200,47 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
 
 
-// Coach HomePage Controller
+// Coach HomePage/Me Controller
 // ----------------------------------------------------------------------------------------
 .controller('CoachHomeCtrl', 
-  ['$scope',
-  '$state',
-  '$stateParams',
-  'Storage',
+  ['$scope','$state','$stateParams','Storage',
+  function($scope,$state,$stateParams,Storage) {
+   
+   // console.log($stateParams.info);
+   // console.log($stateParams.info.intro);
+   // $scope.items = $stateParams.info;
+   // $scope.state = $stateParams.state;
+
+   
+   $scope.state = Storage.get(13);
+   // $scope.name = Storage.get(131);
+   // $scope.company = Storage.get(132);
+   // $scope.position = Storage.get(133);
+   // $scope.selfintro = Storage.get(134);
+   $scope.imgURI = Storage.get(14);
+   // console.log($scope.infom);
+
+
+   $scope.userInfo = JSON.parse(Storage.get("userInfo"));
+   // console.log($scope.userInfo);
+   // console.log($scope.userInfo.BasicInfo.name);
+  $scope.onClickPersonalInfo = function(){
+      $state.go('personalinfo');
+  };
+
+  $scope.onClickPersonalConfig = function(){
+      $state.go('config');
+  };
+
+  $scope.onClickPersonalSchedule = function(){
+      $state.go('schedule');
+  };
+
+}])
+
+//this controller is discarded me and home use CoachHomeController together
+.controller('CoachMeCtrl', 
+  ['$scope','$state','$stateParams','Storage',
   function($scope,$state,$stateParams,Storage) {
    
    // console.log($stateParams.info);
@@ -235,6 +272,7 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 }])
 
 
+
 // Coach Personal Config Controller
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) {
@@ -247,11 +285,21 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
 // Coach Personal Infomation Controller
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory',
-  function($scope,$state,$ionicHistory) {
+.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage',
+  function($scope,$state,$ionicHistory,Storage) {
+   //获得信息
+   // $scope.state = Storage.get(13);
+   // $scope.name = Storage.get(131);
+   // $scope.company = Storage.get(132);
+   // $scope.position = Storage.get(133);
+   // $scope.selfintro = Storage.get(134);
+   $scope.imgURI = Storage.get(14);
+   $scope.userInfo = JSON.parse(Storage.get("userInfo"));
+
   $scope.onClickBackward = function(){
        $ionicHistory.goBack();
   };
+
 }])
 
 
@@ -295,9 +343,6 @@ angular.module('starter.controllers', ['ionic','starter.services'])
 
 })
 
-.controller('CoachMeCtrl',function(){
-
-})
 
 .controller('CoachPatientsCtrl', ['Patients','$scope','$http','$state',
   function(Patients,$scope,$http,$state){

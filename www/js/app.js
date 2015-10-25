@@ -150,8 +150,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     url:'/i',
     views:{
       'coach-me':{
-        templateUrl:'templates/coach-me.html',
-        controller:'CoachMeCtrl'
+        templateUrl:'templates/coach-home.html',
+        controller:'CoachHomeCtrl'
       }
     }
 
