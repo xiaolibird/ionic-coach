@@ -53,6 +53,10 @@ angular.module('starter.services', ['ngCordova','ngResource'])
   */
 })
 
+.value('VALUE',{
+  temp: ""
+})
+
 .factory('Camera', ['$q','$cordovaCamera','CONFIG', function($q,$cordovaCamera,CONFIG) {
  
   return {
@@ -183,20 +187,49 @@ angular.module('starter.services', ['ngCordova','ngResource'])
 }])
 
 
-.factory('Data', ['$resource', '$q', 'CONFIG', '$interval', function ($resource, $q, CONFIG, $interval) {
+.factory('Data', ['$resource', '$q', 'CONFIG', '$interval','Storage',function ($resource, $q, CONFIG, $interval,Storage) {
 
   var self = this;
 
   var abort = $q.defer();
 
+  var urlPartials = "WL";
+  var setUrlPartials = function(p){
+
+      self.urlPartials = p;
+      urlPartials = p;
+      // console.log("在setUrlPartials函数内,"+"UrlPartials =  " + self.urlPartials );
+      // console.log(self.urlPartials);
+      // console.log(urlPartials);
+  };
+
+  var getUrlPartials = function(){
+      // console.log("在getUrlPartials函数内,"+"UrlPartials =  " + self.urlPartials );
+      return self.urlPartials;
+  };
+
   var User = function () {
+
+    // console.log("在User函数内,"+"UrlPartials =  " + getUrlPartials() );
+    console.log(Storage.get(13131313) + '/'+'DoctorInfo');
     return $resource(CONFIG.baseUrl + ':path/:route', {
     
       path:'Users',
       
     }, {
-      myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000}
-      // myTrialGET: {method:'GET', params:{route: 'logout'}, timeout: 10000}
+      myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
+      myTrialGET: {method:'GET', params:{route: Storage.get(13131313) + '/'+'DoctorInfo'}, timeout: 10000}
+    });
+  };
+
+  var User2 = function () {
+    return $resource(CONFIG.baseUrl + ':path/'+ urlPartials + '/:route', {
+    
+      path:'Users',
+      
+    }, {
+      // myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
+      myTrialGET: {method:'GET', params:{route:'DoctorInfo'}, timeout: 10000}
     });
   };
 
@@ -204,17 +237,21 @@ angular.module('starter.services', ['ngCordova','ngResource'])
     abort.resolve();  
     $interval(function () { 
       abort = $q.defer();
-      
-      self.User = User(); 
+      self.User = User();
+      self.User2 = User2(); 
+      self.setUrlPartials = setUrlPartials();
+      self.getUrlPartials = getUrlPartials();
     }, 0, 1);
   };
 
   self.User = User();
-
+  self.User2 = User2(); 
+  self.setUrlPartials = setUrlPartials();
+  self.getUrlPartials = getUrlPartials();
   return self;
 }])
 
-.factory('Users', ['$q', '$http', 'Data',function ($q, $http, Data) {
+.factory('Users', ['$q', '$http', 'Data','Storage',function ($q, $http, Data,Storage) {
   var self = this;
 
   self.myTrial = function (DoctorInfo) {
@@ -226,6 +263,19 @@ angular.module('starter.services', ['ngCordova','ngResource'])
     });
     return deferred.promise;
   };
+
+  self.myTrial2 = function (userid) {
+    var deferred = $q.defer();
+    Storage.set(13131313,userid);
+    Data.User.myTrialGET({uid:userid}, function (data, headers) {
+      console.log(data)
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
     return self;
 }])
 
